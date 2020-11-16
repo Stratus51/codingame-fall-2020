@@ -1,4 +1,4 @@
-use crate::base::{Learn, Recipe, Spell};
+use crate::base::{Learn, Recipe, RecipeId, Spell, SpellId};
 use crate::player::Player;
 
 macro_rules! parse_input {
@@ -23,7 +23,7 @@ impl InputAction {
         match ty {
             // in the first league: BREW; later: CAST, OPPONENT_CAST, LEARN, BREW
             "BREW" => Self::Brew(Recipe {
-                id: parse_input!(inputs[0], i32),
+                id: RecipeId::new(parse_input!(inputs[0], i32)),
                 ingredients: [
                     -parse_input!(inputs[2], i32) as u32,
                     -parse_input!(inputs[3], i32) as u32,
@@ -34,7 +34,7 @@ impl InputAction {
                 price: parse_input!(inputs[6], u32),
             }),
             "CAST" => Self::Cast(Spell {
-                id: parse_input!(inputs[0], i32),
+                id: SpellId::new(parse_input!(inputs[0], i32)),
                 delta: [
                     parse_input!(inputs[2], i32),
                     parse_input!(inputs[3], i32),
@@ -48,7 +48,7 @@ impl InputAction {
                 repeatable: parse_input!(inputs[10], i32),
             }),
             "OPPONENT_CAST" => Self::OpponentCast(Spell {
-                id: parse_input!(inputs[0], i32),
+                id: SpellId::new(parse_input!(inputs[0], i32)),
                 delta: [
                     parse_input!(inputs[2], i32),
                     parse_input!(inputs[3], i32),

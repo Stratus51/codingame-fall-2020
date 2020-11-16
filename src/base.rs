@@ -1,9 +1,29 @@
 use crate::vec::Vec4;
 
+#[derive(Clone, Copy)]
+pub struct SpellId {
+    id: i32,
+}
+impl SpellId {
+    pub fn new(id: i32) -> Self {
+        Self { id }
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct RecipeId {
+    id: i32,
+}
+impl RecipeId {
+    pub fn new(id: i32) -> Self {
+        Self { id }
+    }
+}
+
 #[derive(Clone)]
 pub struct Recipe {
     // the unique ID of this spell or recipe
-    pub id: i32,
+    pub id: RecipeId,
     // ingredients change
     pub ingredients: Vec4<u32>,
     // The rpice in rupees if this is a potion
@@ -13,7 +33,7 @@ pub struct Recipe {
 #[derive(Clone)]
 pub struct Spell {
     // the unique ID of this spell or recipe
-    pub id: i32,
+    pub id: SpellId,
     // ingredients change
     pub delta: Vec4<i32>,
     // in the first two leagues: always 0; later: the index in the tome if this is a tome spell,
@@ -64,8 +84,8 @@ impl Spell {
 pub struct Learn;
 
 pub enum Action {
-    Brew(i32),
-    Cast(i32),
+    Brew(RecipeId),
+    Cast(SpellId),
     Rest,
     Wait,
 }
@@ -73,8 +93,8 @@ pub enum Action {
 impl std::fmt::Display for Action {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::Brew(id) => write!(f, "BREW {}", id),
-            Self::Cast(id) => write!(f, "CAST {}", id),
+            Self::Brew(id) => write!(f, "BREW {}", id.id),
+            Self::Cast(id) => write!(f, "CAST {}", id.id),
             Self::Rest => write!(f, "REST"),
             Self::Wait => write!(f, "WAIT"),
         }
