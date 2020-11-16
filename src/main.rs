@@ -84,6 +84,12 @@ fn play() -> Action {
     }
 }
 
+// TODO Evaluate a recipe real time cost using the spell combinations
+// TODO Target a specific recipe
+
+// TODO Find the same information for the opponent
+// Check if accumulating ingredients before his next recipe is more worth it
+
 fn main() {
     // game loop
     loop {
