@@ -1,1 +1,3 @@
 /target
+built_src/**
+full.rs
