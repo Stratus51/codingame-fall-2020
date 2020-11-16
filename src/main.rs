@@ -65,7 +65,7 @@ fn play() {
         .max_by(|a, b| a.2.partial_cmp(&b.2).unwrap())
         .unwrap();
 
-    if best_score <= 0.2 {
+    if best_score < 0.0 && me.inventory.norm1() >= 8 {
         println!("REST");
     } else {
         println!("CAST {}", best_spell.id);
