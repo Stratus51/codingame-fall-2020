@@ -3,16 +3,28 @@ mod vec;
 mod base;
 mod input;
 
-macro_rules! parse_input {
-    ($x:expr, $t:ident) => {
-        $x.trim().parse::<$t>().unwrap()
-    };
+enum Action {
+    Brew(i32),
+    Cast(i32),
+    Rest,
+    Wait,
+}
+
+impl std::fmt::Display for Action {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Brew(id) => write!(f, "BREW {}", id),
+            Self::Cast(id) => write!(f, "CAST {}", id),
+            Self::Rest => write!(f, "REST"),
+            Self::Wait => write!(f, "WAIT"),
+        }
+    }
 }
 
 const ME: usize = input::ME;
 const MEAN_PRICE: f32 = 10.0;
 
-fn play() {
+fn play() -> Action {
     let input = input::Input::parse();
 
     // If we can make a recipe, make it
@@ -23,7 +35,7 @@ fn play() {
         .max_by(|a, b| a.price.cmp(&b.price));
 
     if let Some(act) = best_recipe {
-        return println!("BREW {}", act.id);
+        return Action::Brew(act.id);
     }
 
     // Else find the most cost efficient spell
@@ -38,7 +50,7 @@ fn play() {
 
     // If every spell is used, rest
     if spells.is_empty() {
-        return println!("REST");
+        return Action::Rest;
     }
 
     let (_, best_spell, best_score) = input
@@ -66,9 +78,9 @@ fn play() {
         .unwrap();
 
     if best_score < 0.0 && me.inventory.norm1() >= 8 {
-        println!("REST");
+        Action::Rest
     } else {
-        println!("CAST {}", best_spell.id);
+        Action::Cast(best_spell.id)
     }
 }
 
@@ -79,6 +91,6 @@ fn play() {
 fn main() {
     // game loop
     loop {
-        play();
+        println!("{}", play());
     }
 }
