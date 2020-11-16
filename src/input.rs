@@ -1,4 +1,5 @@
-use crate::base::{Learn, Player, Recipe, Spell};
+use crate::base::{Learn, Recipe, Spell};
+use crate::player::Player;
 
 macro_rules! parse_input {
     ($x:expr, $t:ident) => {
@@ -75,31 +76,21 @@ pub struct Input {
 }
 
 impl Input {
-    pub fn parse_player(mut spells: Vec<Spell>) -> Player {
+    pub fn parse_player(spells: Vec<Spell>) -> Player {
         let mut input_line = String::new();
         std::io::stdin().read_line(&mut input_line).unwrap();
         let inputs = input_line.split(' ').collect::<Vec<_>>();
-        let mut ready_spells = vec![];
-        let mut used_spells = vec![];
-        for spell in spells.into_iter() {
-            if spell.castable {
-                ready_spells.push(spell);
-            } else {
-                used_spells.push(spell);
-            }
-        }
-        Player {
-            inventory: [
+        Player::new(
+            [
                 parse_input!(inputs[0], u32), // tier-0 ingredients in inventory
                 parse_input!(inputs[1], u32),
                 parse_input!(inputs[2], u32),
                 parse_input!(inputs[3], u32),
             ]
             .into(),
-            score: parse_input!(inputs[4], i32), // amount of rupees
-            ready_spells,
-            used_spells,
-        }
+            parse_input!(inputs[4], i32), // amount of rupees
+            spells,
+        )
     }
 
     pub fn parse() -> Self {

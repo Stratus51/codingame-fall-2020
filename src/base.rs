@@ -63,84 +63,20 @@ impl Spell {
 
 pub struct Learn;
 
-#[derive(Clone)]
-pub struct Player {
-    pub inventory: Vec4<u32>,
-    pub score: i32,
-    pub ready_spells: Vec<Spell>,
-    pub used_spells: Vec<Spell>,
-}
-
 pub enum Action {
     Brew(i32),
     Cast(i32),
     Rest,
+    Wait,
 }
 
-pub struct RecipeCost {
-    pub turns: usize,
-    pub waste: Vec4<u32>,
-}
-
-impl Player {
-    pub fn can_brew(&self, recipe: &Recipe) -> bool {
-        self.inventory[0] >= recipe.ingredients[0]
-            && self.inventory[1] >= recipe.ingredients[1]
-            && self.inventory[2] >= recipe.ingredients[2]
-            && self.inventory[3] >= recipe.ingredients[3]
-    }
-
-    pub fn can_cast(&self, spell: &Spell) -> bool {
-        self.inventory[0] as i32 + spell.delta[0] >= 0
-            && self.inventory[1] as i32 + spell.delta[1] >= 0
-            && self.inventory[2] as i32 + spell.delta[2] >= 0
-            && self.inventory[3] as i32 + spell.delta[3] >= 0
-    }
-
-    pub fn required_ingredients(&self, cost: &Vec4<i32>) -> Vec4<i32> {
-        [
-            cost[0] - self.inventory[0] as i32,
-            cost[1] - self.inventory[1] as i32,
-            cost[2] - self.inventory[2] as i32,
-            cost[3] - self.inventory[3] as i32,
-        ]
-        .into()
-    }
-
-    pub fn recipe_missing_ingredients(&self, recipe: &Recipe) -> Option<[u32; 4]> {
-        let mut missing = [0u32; 4];
-        let mut none_missing = true;
-        for i in 0..4 {
-            if recipe.ingredients[i] > self.inventory[i] {
-                missing[i] = recipe.ingredients[i] - self.inventory[i];
-                none_missing = false;
-            }
-        }
-        if none_missing {
-            None
-        } else {
-            Some(missing)
+impl std::fmt::Display for Action {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Brew(id) => write!(f, "BREW {}", id),
+            Self::Cast(id) => write!(f, "CAST {}", id),
+            Self::Rest => write!(f, "REST"),
+            Self::Wait => write!(f, "WAIT"),
         }
     }
-
-    // TODO Multi turn planning
-    // pub fn evaluate_recipe_cost(&self, recipe: &Recipe) -> Option<RecipeCost> {
-    //     let mut player = self.clone();
-    //     let mut turns = 0;
-
-    //     loop {
-    //         let missing = match player.recipe_missing_ingredients(recipe) {
-    //             Some(m) => m,
-    //             None => {
-    //                 let waste = [
-    //                     player.inventory[0] - recipe.ingredients[0],
-    //                     player.inventory[1] - recipe.ingredients[1],
-    //                     player.inventory[2] - recipe.ingredients[2],
-    //                     player.inventory[3] - recipe.ingredients[3],
-    //                 ];
-    //                 return Some(RecipeCost { turns, waste });
-    //             }
-    //         };
-    //     }
-    // }
 }
